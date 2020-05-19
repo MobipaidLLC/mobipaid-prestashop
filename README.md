@@ -96,5 +96,9 @@ You can contact developer with this [link](https://mobipaid.com/contact/).
 
 == Changelog ==
 
+= 1.0.1 2020-05-19 =
+* add parameter item_price and sku on postlink request
+* change the way to receive response from gateway
+
 = 1.0.0 2020-04-07 =
 * Initial release

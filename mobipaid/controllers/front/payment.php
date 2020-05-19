@@ -130,7 +130,9 @@ class MobipaidPaymentModuleFrontController extends ModuleFrontController
         foreach ($products as $product) {
             $cartItems[] = array(
                 'name' => $product['name'],
-                'qty'  => $product['cart_quantity'],
+                'qty'  => (int)$product['cart_quantity'],
+                'unit_price'=> (float)$this->module->setNumberFormat($product['price_wt']),
+                'sku'=> $product['reference']
             );
         }
 

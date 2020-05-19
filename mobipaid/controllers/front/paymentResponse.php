@@ -28,18 +28,16 @@ class MobipaidPaymentResponseModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $cartId = Tools::getValue('cart_id');
-        $paymentResponse = Tools::getValue('response');
-
+        $paymentResponse = Tools::file_get_contents('php://input');
+        
         if (!empty($paymentResponse)) {
             $paymentResponse = json_decode($paymentResponse, 1);
+            $paymentResponse = json_decode($paymentResponse['response'], 1);
         } else {
             $messageLog = 'Mobipaid - no payment response from gateway';
             $this->module->addPluginLogger($messageLog, 3, null, 'Cart', 0, true);
             die('no response from gateway.');
         }
-        
-        $messageLog = 'Mobipaid - payment response from payment gateway : ' . json_encode($paymentResponse);
-        $this->module->addPluginLogger($messageLog, 1, null, 'Cart', $cartId, true);
         
         if ($paymentResponse['result'] == "ACK") {
             $this->module->addPluginLogger('Mobipaid - use payment gateway', 1, null, 'Cart', $cartId, true);
