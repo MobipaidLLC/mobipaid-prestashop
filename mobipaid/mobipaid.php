@@ -45,7 +45,7 @@ class Mobipaid extends PaymentModule
     {
         $this->name = 'mobipaid';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->author = 'Mobipaid';
         $this->module_key = '1569498170f6de365fb2248b7a12cc52';
         $this->currencies = true;

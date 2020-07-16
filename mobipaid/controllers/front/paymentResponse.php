@@ -28,27 +28,37 @@ class MobipaidPaymentResponseModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $cartId = Tools::getValue('cart_id');
-        $paymentResponse = Tools::file_get_contents('php://input');
-        
-        if (!empty($paymentResponse)) {
-            $paymentResponse = json_decode($paymentResponse, 1);
-            $paymentResponse = json_decode($paymentResponse['response'], 1);
-        } else {
-            $messageLog = 'Mobipaid - no payment response from gateway';
-            $this->module->addPluginLogger($messageLog, 3, null, 'Cart', 0, true);
-            die('no response from gateway.');
+        $paymentResponse = json_decode(Tools::getValue('response'), 1);
+        $result = isset($paymentResponse['result']) ? $paymentResponse['result'] : null;
+        $status = isset($paymentResponse['status']) ? $paymentResponse['status'] : null;
+
+        if ($status) {
+            $paymentResult = [];
+            $paymentResult['payment_id'] =
+            isset($paymentResponse['response']['id']) ? $paymentResponse['response']['id'] : '';
+            $paymentResult['transaction_id'] =
+            isset($paymentResponse['customParameters']['transaction_id']) ?
+            $paymentResponse['customParameters']['transaction_id'] : '';
+            $paymentResult['amount'] =  isset($paymentResponse['amount']) ? $paymentResponse['amount'] : '';
+            $paymentResult['result'] =  isset($paymentResponse['status']) ? $paymentResponse['status'] : '';
+            $paymentResult['currency'] =
+            isset($paymentResponse['response']['currency']) ? $paymentResponse['response']['currency'] : '';
+            $paymentResult['result_code'] =
+            isset($paymentResponse['result_code']) ? $paymentResponse['result_code'] : '';
+        } elseif ($result) {
+            $paymentResult = $paymentResponse;
         }
         
-        if ($paymentResponse['result'] == "ACK") {
+        if ($paymentResult['result'] == "ACK") {
             $this->module->addPluginLogger('Mobipaid - use payment gateway', 1, null, 'Cart', $cartId, true);
             $isTransactionLogExist = $this->isTransactionLogExist($cartId);
 
             if (!$isTransactionLogExist) {
                 Context::getContext()->cart = new Cart((int)$cartId);
-                $transactionLog = $this->setTransactionLog($paymentResponse);
+                $transactionLog = $this->setTransactionLog($paymentResult);
                 $secretkey = $this->module->generateSecretKey(
                     $cartId,
-                    $paymentResponse['currency']
+                    $paymentResult['currency']
                 );
 
                 if ($secretkey != Tools::getValue('secure_payment')) {
@@ -81,7 +91,7 @@ class MobipaidPaymentResponseModuleFrontController extends ModuleFrontController
                     $cartId,
                     true
                 );
-                $this->updatePrestashopOrderStatus($cartId, Configuration::get('PS_OS_PAYMENT'), $paymentResponse);
+                $this->updatePrestashopOrderStatus($cartId, Configuration::get('PS_OS_PAYMENT'), $paymentResult);
             }
         } else {
             die('payment failed');
