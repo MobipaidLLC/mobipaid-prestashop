@@ -18,7 +18,7 @@
 *}
 
 <p class="payment_module">
-	<a href="{$link->getModuleLink('mobipaid', 'payment', [], true)|escape:'html'}">
+	<a href="{$link->getModuleLink('mobipaid', 'payment', [], true)|escape:'html':'UTF-8'}">
 		<img src="{$this_path_mobipaid|escape:'htmlall':'UTF-8'}logo.png" alt="{l s='Mobipaid' mod='mobipaid'}" />
 		{l s='Mobipaid' mod='mobipaid'} {l s='(order processing will be longer)' mod='mobipaid'}
 	</a>

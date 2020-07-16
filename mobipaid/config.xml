@@ -2,7 +2,7 @@
 <module>
 	<name>mobipaid</name>
 	<displayName><![CDATA[Mobipaid]]></displayName>
-	<version><![CDATA[1.0.1]]></version>
+	<version><![CDATA[1.0.2]]></version>
 	<description><![CDATA[Receive payments using Mobipaid.]]></description>
 	<author><![CDATA[Mobipaid]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
